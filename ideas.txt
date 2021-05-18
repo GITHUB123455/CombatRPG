@@ -1,0 +1,5 @@
+
+make potion for vampire so that you dont turn into one
+make an accesories section in the inventory for things like a water buket to stop burning from dragon
+wanderers that give you potions and accesories
+enemys can drop potions
