@@ -67,9 +67,9 @@ class WorldSpace(object):
     for i in range(int(self.scale)):
       for p in range(int(self.scale)):
         for j in range(2):
-          if int(self.drops_array)[i][p][j] > 90:
+          if int(self.drops_array[i][p][j])> 90:
             self.drops_array[i][p][j] = self.consumables[2]
-          elif int(self.drops_array)[i][p][j] > 80:
+          elif int(self.drops_array[i][p][j]) > 80:
             self.drops_array[i][p][j] = self.consumables[4]
           elif int(self.drops_array[i][p][j]) > 60:
             self.drops_array[i][p][j] = self.consumables[1]

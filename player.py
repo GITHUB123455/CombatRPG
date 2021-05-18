@@ -188,12 +188,16 @@ class Player(object):
         print('Invalid input.')
 
     def ApplyPotions(self):
-      PotionType, BonusAmount = self.inventory.ConsumablEffect()
-      if PotionType == "Health":
-         self.health += BonusAmount
-         if self.health > self.maxHealth:
-           self.health = self.maxHealth
-         print("Your health: " + str(self.health))
-      elif PotionType == "Cure":
-         self.Infected = False
-         self.InfectedTime = 0
+      try:
+          PotionType, BonusAmount = self.inventory.ConsumablEffect()
+          if PotionType == "Health":
+             self.health += BonusAmount
+             if self.health > self.maxHealth:
+               self.health = self.maxHealth
+             print("Your health: " + str(self.health))
+          elif PotionType == "Cure":
+             self.Infected = False
+             self.InfectedTime = 0
+      except TypeError:
+          print("e")
+    
