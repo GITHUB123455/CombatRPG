@@ -11,7 +11,7 @@ class WorldSpace(object):
 
   def __init__(self, scale):
     self.scale = scale
-
+    self.Night = False
 
 
   def worldGen(self):
@@ -94,6 +94,7 @@ class WorldSpace(object):
   def DayNight(self):
     self.TimeCounter += 1
     if self.TimeCounter > 5:
+       self.Night = True
        print('Night time is here be prepared!')
     elif self.TimeCounter <= 5:
        print ("The sun is up, Day is here")

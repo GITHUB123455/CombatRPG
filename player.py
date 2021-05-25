@@ -107,6 +107,9 @@ class Player(object):
       if attacktype == '3':
         print('You rest.')
         self.stamina += 2
+        if self.stamina > self.maxStamina:
+            self.stamina = self.maxStamina
+            print('You are fully energized.')
         return 0, 0
       if attacktype == '4':
         self.inventory.useConsumable()
@@ -200,4 +203,3 @@ class Player(object):
              self.InfectedTime = 0
       except TypeError:
           print("e")
-    

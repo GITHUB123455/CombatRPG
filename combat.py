@@ -4,9 +4,9 @@ enemies = {'orc' : Orc, 'goblin' : Goblin, 'dragon' : Dragon, 'vampire' : Vampir
 
 def combatLoop(type, player, world):
     enemy = enemies[type]()
-    playerDex = player.dexterity
+    PlayerTurn = player.dexterity > enemy.dexterity
     while enemy.health > 0 and player.health > 0:
-      playerDex = combatOrder(playerDex, player, enemy, type)
+      PlayerTurn = combatOrder(PlayerTurn, player, enemy, type)
 
     if enemy.health <= 0:
       print('You won!')
@@ -17,8 +17,8 @@ def combatLoop(type, player, world):
       print('You lost.')
       return False
 
-def combatOrder(playerDex, player, enemy, type):
-    if playerDex >= enemy.dexterity:
+def combatOrder(PlayerTurn, player, enemy, type):
+    if PlayerTurn:
 
       if player.health > 0:
         print('Your Health : ' + str(player.health))
@@ -28,34 +28,34 @@ def combatOrder(playerDex, player, enemy, type):
         if attackStat >= enemy.armorClass:
           print('You hit.')
           enemy.health -= damage
-          playerDex -= 1
+          PlayerTurn = False
 
         elif attackStat == 0:
-          playerDex -= 1
+          PlayerTurn = False
 
         else:
           print('You miss.')
-          playerDex -= 1
+          PlayerTurn = False
 
       else:
-        return playerDex
+        return PlayerTurn
 
-    if enemy.dexterity >= playerDex:
+    else:
       if enemy.health > 0:
         attackStat, damage = enemy.attack(player)
         if attackStat >= player.armorClass:
           print("The " + type + " hits.")
           player.health -= damage
-          enemy.dexterity -= 1
+          PlayerTurn = True
 
         elif attackStat == 0:
-          enemy.dexterity -= 1
+          PlayerTurn = True
 
         else:
-          enemy.dexterity -= 1
+          PlayerTurn = True
           print("The " + type + " misses.")
 
       else:
-        return playerDex
+        return PlayerTurn
 
-    return playerDex
+    return PlayerTurn
