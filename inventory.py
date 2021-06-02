@@ -55,11 +55,13 @@ class Inventory(object):
   def useConsumable(self):
     self.displayConsumables()
     selection = input("Select the consumable you would like to use. ").lower()
+    Flag = 0
     try:
         if self.consumables[FindInList(selection, self.consumables)][1] > 0:
-            for Slot in self.consumedItem:
-                if self.consumedItem[Slot] is None:
+            for Slot in range(len(self.consumedItem)):
+                if self.consumedItem[Slot] is None and Flag == 0:
                     self.consumedItem[Slot] = consumables[selection]()
+                    Flag = 1
             self.consumables[FindInList(selection, self.consumables)][1] -= 1
             print('You have consumed a ' + selection + '.')
             return
@@ -75,30 +77,35 @@ class Inventory(object):
     #   return
 
   def ConsumablEffect(self):
-      for Slot in self.consumedItem:
+      PotionType = [ ]
+      BonusAmount = [ ]
+      for Slot in range(len(self.consumedItem)):
+          if self.consumedItem[Slot] is None:
+              PotionType.append(" ")
+              BonusAmount.append(0)
 
-          try:
-                if self.consumedItem[Slot].duration > 0:
+          elif self.consumedItem[Slot].duration > 0:
                     self.consumedItem[Slot].duration -= 1
                     if self.consumedItem[Slot].statBonus == "Health":
                         print('Health increased by ' + str(self.consumedItem[Slot].bonusAmount) + '.')
-                        return "Health", self.consumedItem[Slot].bonusAmount
+                        PotionType.append("Health")
+                        BonusAmount.append(self.consumedItem[Slot].bonusAmount)
                     elif self.consumedItem[Slot].statBonus == "Strength":
                         print('Strength increased by' + str(self.consumedItem[Slot].bonusAmount))
-                        return "Strength", self.consumedItem[Slot].bonusAmount
+                        PotionType.append("Strength")
+                        BonusAmount.append(self.consumedItem[Slot].bonusAmount)
                     elif self.consumedItem[Slot].statBonus == "SuperStrength":
                         print('Strength increased by' + str(self.consumedItem[Slot].bonusAmount))
-                        return "Strength", self.consumedItem[Slot].bonusAmount
+                        PotionType.append("Strength")
+                        BonusAmount.append(self.consumedItem[Slot].bonusAmount)
                     elif self.consumedItem[Slot].statBonus == "Stamina":
                         print('Stamina increased' + str(self.consumedItem[Slot].bonusAmount))
-                        return "Stamina", self.consumedItem[Slot].bonusAmount
-                else:
+                        PotionType.append("Stamina")
+                        BonusAmount.append(self.consumedItem[Slot].bonusAmount)
+          else:
                     self.consumedItem[Slot] = None
                     print('No bonus')
-                    return " ", 0
+                    PotionType.append(" ")
+                    BonusAmount.append(0)
 
-          except AttributeError:
-              return " ", 0
-
-          except TypeError:
-              return " ", 0
+      return PotionType, BonusAmount
