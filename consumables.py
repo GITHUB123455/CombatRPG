@@ -22,7 +22,7 @@ class StrengthPotion(Consumable):
 class SuperStrengthPotion(Consumable):
   def __init__(self):
     self.duration = 1
-    self.statBonus = "SuperStrength"
+    self.statBonus = "Strength"
     self.bonusAmount = random.randrange(1, 10) * 5
 
 class StaminaPotion(Consumable):

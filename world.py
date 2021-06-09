@@ -8,10 +8,13 @@ class WorldSpace(object):
 
   consumables = [' ', 'health potion', 'vampirism anitidote', 'stamina potion', 'super strength potion', 'strength potion']
 
+  EnemySpawnFrequency = [20, 10, 5, 5]
 
+  EnemyProbability = {}
   def __init__(self, scale):
-    self.scale = scale
-    self.Night = False
+      self.scale = scale
+      self.Night = False
+      EnemyProbability = ProbabilityGen(enemies, EnemySpawnFrequency)
 
 
   def worldGen(self):
@@ -100,3 +103,16 @@ class WorldSpace(object):
        print ("The sun is up, Day is here")
     elif self.TimeCounter == 11:
        self.TimeCounter = 0
+
+  def ProbabilityGen(self, list, chance):
+      ProbabilityDictionary = { }
+      Empty = 0
+      for i in range(len(chance)):
+          Empty += chance[i]
+      Empty = 100 - Empty
+      chance.insert(0, Empty)
+      for i in range(len(chance)):
+          chance[i + 1] += chance[i]
+      for i in range(len(chance)):
+          ProbabilityDictionary[chance[i]] = list[i]
+      return ProbabilityDictionary

@@ -91,15 +91,11 @@ class Inventory(object):
                         PotionType.append("Health")
                         BonusAmount.append(self.consumedItem[Slot].bonusAmount)
                     elif self.consumedItem[Slot].statBonus == "Strength":
-                        print('Strength increased by' + str(self.consumedItem[Slot].bonusAmount))
-                        PotionType.append("Strength")
-                        BonusAmount.append(self.consumedItem[Slot].bonusAmount)
-                    elif self.consumedItem[Slot].statBonus == "SuperStrength":
-                        print('Strength increased by' + str(self.consumedItem[Slot].bonusAmount))
+                        print('Strength increased by ' + str(self.consumedItem[Slot].bonusAmount))
                         PotionType.append("Strength")
                         BonusAmount.append(self.consumedItem[Slot].bonusAmount)
                     elif self.consumedItem[Slot].statBonus == "Stamina":
-                        print('Stamina increased' + str(self.consumedItem[Slot].bonusAmount))
+                        print('Stamina increased by ' + str(self.consumedItem[Slot].bonusAmount))
                         PotionType.append("Stamina")
                         BonusAmount.append(self.consumedItem[Slot].bonusAmount)
           else:

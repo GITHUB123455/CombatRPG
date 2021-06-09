@@ -191,14 +191,21 @@ class Player(object):
         print('Invalid input.')
 
     def ApplyPotions(self):
-          PotionType, BonusAmount = self.inventory.ConsumablEffect()
-          print(PotionType)
-          for Place in range(len(PotionType)):
-              if PotionType[Place] == "Health":
-                 self.health += BonusAmount[Place]
-                 if self.health > self.maxHealth:
-                   self.health = self.maxHealth
-                 print("Your health: " + str(self.health))
-              elif PotionType[Place] == "Cure":
-                 self.Infected = False
-                 self.InfectedTime = 0
+        PotionType, BonusAmount = self.inventory.ConsumablEffect()
+        for Place in range(len(PotionType)):
+            if PotionType[Place] == "Health":
+                self.health += BonusAmount[Place]
+                if self.health > self.maxHealth:
+                    self.health = self.maxHealth
+                print("Your health: " + str(self.health))
+            elif PotionType[Place] == "Stamina":
+                self.stamina += BonusAmount[Place]
+                if self.stamina > self.maxStamina:
+                    self.stamina = self.maxStamina
+                print("Your stamina: " + str(self.stamina))
+            elif PotionType[Place] == "Strength":
+                self.strength += BonusAmount[Place]
+                print("Your strength: " + str(self.strength))
+            elif PotionType[Place] == "Cure":
+                self.Infected = False
+                self.InfectedTime = 0
