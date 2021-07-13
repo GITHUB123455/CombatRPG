@@ -12,22 +12,19 @@ world.enemyGeneration(player)
 world.consumablesGen()
 
 
-
 while True:
+    if player.infected and player.infectedDuration == 0:
+        print("You have succumbed to vampiritis. Game over.")
+        break
+
     if player.counter > 10:
         world.enemyGeneration(player)
         player.counter = 0
         print("The Blood Moon rises, the enemies have gathered their strength again.")
 
-    if player.Infected and player.InfectedTime == 0:
-      print('You ran out of time, you have turned into a vampire.')
-      print('Game over')
-      break
     w, c = player.getDrops(world)
-
     if w != ' ':
       player.pickupDrops(world, 0)
-
     if c != ' ':
       player.pickupDrops(world, 1)
 
@@ -39,13 +36,13 @@ while True:
         enemy = world.getEnemy(player)
         terrain = world.getTerrain(player)
         print('You are in the ' + terrain + '.')
-        if enemy == 'vampire' and world.Night == False:
+        if enemy == "vampire" and world.night == False:
             player.decision()
         print('You see a(n) ' + enemy + '.')
         victory = combatLoop(enemy, player, world)
         if victory == True:
             world.clearEnemy(player)
-            player.pickupDrops(world, 0)
+            player.pickupDrops(world, 1)
             player.decision()
         if victory == False:
             print('Game Over')

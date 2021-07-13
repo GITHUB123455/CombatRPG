@@ -25,34 +25,33 @@ class Player(object):
       self.burnDuration = 0
       self.paralyzed = False
       self.paralyzeDuration = 0
-      self.Infected = False
-      self.InfectedTime = 0
+      self.infected = False
+      self.infectedDuration = 0
 
       self.inventory = Inventory()
 
       self.counter = 0
 
-
     def movement(self):
-      self.counter += 1
+        self.counter += 1
 
-      if self.Infected:
-         self.infectedAction()
+        if self.infected:
+            self.infectedAction()
 
-      print('W. | North')
-      print('S. | South')
-      print('D. | East')
-      print('A. | West')
-      movementInput = input("Input the direction you would like to travel. ").lower()
-      #Compare it to the dictionary of moves
-      if movementInput in self.directions:
-          #Move
-          direction = self.directions[movementInput]
-          self.x, self.y = self.x + direction[0], self.y + direction[1]
-          self.worldBounds()
-      else:
-          #Return exception
-          print('Invalid Input')
+        print('W. | North')
+        print('S. | South')
+        print('D. | East')
+        print('A. | West')
+        movementInput = input("Input the direction you would like to travel. ").lower()
+        #Compare it to the dictionary of moves
+        if movementInput in self.directions:
+            #Move
+            direction = self.directions[movementInput]
+            self.x, self.y = self.x + direction[0], self.y + direction[1]
+            self.worldBounds()
+        else:
+            #Return exception
+            print('Invalid Input')
 
     #Checks the player location against the world bounds and makes
     #sure the player does not leave the map
@@ -72,7 +71,7 @@ class Player(object):
 
     def attack(self):
       #Apply Conditions
-      self.ApplyPotions()
+      self.applyPotions()
 
       if self.burning:
         self.burningAction()
@@ -84,7 +83,7 @@ class Player(object):
       print('1. Light Attack')
       print('2. Heavy Attack')
       print('3. Rest')
-      print('4. Drink Potion')
+      print('4. Use Potion')
       attacktype = input('Input the attack you would like to make. ').lower()
       if attacktype == '1' or attacktype == 'light' or attacktype == 'light attack':
         if self.stamina >= 1:
@@ -104,16 +103,18 @@ class Player(object):
           print('Not enough stamina! You rest.')
           self.stamina += 1
           return 0, 0
-      if attacktype == '3':
+      if attacktype == '3' or attacktype == 'rest':
         print('You rest.')
         self.stamina += 2
         if self.stamina > self.maxStamina:
-            self.stamina = self.maxStamina
-            print('You are fully energized.')
+          self.stamina = self.maxStamina
+          print('Stamina at max.')
         return 0, 0
-      if attacktype == '4':
+
+      if attacktype == '4' or attacktype == 'use potion':
         self.inventory.useConsumable()
-        return 0,0
+        return 0, 0
+
       else:
         print('Invalid input.')
         return self.attack()
@@ -132,10 +133,10 @@ class Player(object):
         self.paralyzeDuration -= 1
 
     def infectedAction(self):
-      if self.InfectedTime <= 0:
-        self.Infected = False
-      else:
-        self.InfectedTime -= 1
+        if self.infectedDuration <= 0:
+            self.infected = False
+        else:
+            self.infectedDuration -= 1
 
     def checkInventory(self):
       self.inventory.displayConsumables()
@@ -149,7 +150,6 @@ class Player(object):
     def decision(self):
       print("1. Move")
       print("2. Inventory")
-#      print("3. Stats")
       selection = input('What would you like to do? ').lower()
 
       if selection == '1' or selection == 'move':
@@ -158,31 +158,27 @@ class Player(object):
       elif selection == '2' or selection == 'inventory':
         self.checkInventory()
 
-#      elif selection == '3' or selection == 'stats':
-#        print('Your Health : ' + str(player.health))
-#        print('Your Stamina : ' + str(player.stamina))
-#         print('Vampire Satus: ' + InfectedStatus)
       else:
         print('Invalid input')
 
     def getDrops(self, world):
       return world.drops_array[self.x][self.y][0], world.drops_array[self.x][self.y][1]
 
-    def pickupDrops(self, world, type):
-      droppedItem = world.drops_array[self.x][self.y][type]
+    def pickupDrops(self, world, itemType):
+      droppedItem = world.drops_array[self.x][self.y][itemType]
       if droppedItem == ' ':
         return
       print('You found a ' + droppedItem + '.')
       playerChoice = input('Would you like to pick it up? ').lower()
       if playerChoice == 'yes':
-        if type == 0:
+        if itemType == 0:
           self.inventory.weapons.append(droppedItem)
-        elif type == 1:
-          for k in range(len(self.inventory.consumables)):
-              if self.inventory.consumables[k][0] == droppedItem:
-                  self.inventory.consumables[k][1] += 1
+        elif itemType == 1:
+            for i in range(len(self.inventory.consumables)):
+                if self.inventory.consumables[i][0] == droppedItem:
+                    self.inventory.consumables[i][1] += 1
         print('You picked up the ' + droppedItem + '.')
-        world.drops_array[self.x][self.y][type] = ' '
+        world.drops_array[self.x][self.y][itemType] = ' '
         return
       elif playerChoice == 'no':
         print('You decided to move on.')
@@ -190,22 +186,18 @@ class Player(object):
       else:
         print('Invalid input.')
 
-    def ApplyPotions(self):
-        PotionType, BonusAmount = self.inventory.ConsumablEffect()
-        for Place in range(len(PotionType)):
-            if PotionType[Place] == "Health":
-                self.health += BonusAmount[Place]
+    def applyPotions(self):
+        potiontype, bonusAmount = self.inventory.consumableEffect()
+        print(potiontype)
+        for i in range(len(potiontype)):
+            if potiontype[i] == "Health":
+                self.health += bonusAmount[i]
                 if self.health > self.maxHealth:
                     self.health = self.maxHealth
                 print("Your health: " + str(self.health))
-            elif PotionType[Place] == "Stamina":
-                self.stamina += BonusAmount[Place]
-                if self.stamina > self.maxStamina:
-                    self.stamina = self.maxStamina
-                print("Your stamina: " + str(self.stamina))
-            elif PotionType[Place] == "Strength":
-                self.strength += BonusAmount[Place]
-                print("Your strength: " + str(self.strength))
-            elif PotionType[Place] == "Cure":
-                self.Infected = False
-                self.InfectedTime = 0
+            elif potiontype[i] == "Cure":
+                self.infected = False
+                self.infectedDuration = 0
+            elif potiontype[i] == "Strength":
+                self.strength += bonusAmount[i]
+                print("Your health: " + str(self.strength))
