@@ -14,7 +14,8 @@ class Player(object):
       self.maxStamina = 10
       self.dexterity = 3
       self.strength = 6
-      self.armorClass = 14
+      self.armorClass = 10 + self.dexterity
+
 
       #Placeholder Stats
       self.health = self.maxHealth
@@ -74,7 +75,8 @@ class Player(object):
     def attack(self):
       #Apply Conditions
       self.ApplyPotions()
-
+      self.armourClass = 10 + self.dexterity
+      self.armourClass = self.inventory.equippedArmour.ArClModifier + self.armourClass
       if self.burning:
         self.burningAction()
 
