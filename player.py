@@ -35,6 +35,7 @@ class Player(object):
 
     def movement(self):
       self.counter += 1
+      self.ApplyPotions()
 
       if self.Infected:
          self.infectedAction()
@@ -137,8 +138,7 @@ class Player(object):
       else:
         self.InfectedTime -= 1
 
-    def checkInventory(self):
-      self.inventory.displayConsumables()
+    def SwapWeapon(self):
       if len(self.inventory.weapons) > 0:
         self.inventory.displayWeapons()
         self.inventory.equipWeapon()
@@ -148,15 +148,18 @@ class Player(object):
 
     def decision(self):
       print("1. Move")
-      print("2. Inventory")
-#      print("3. Stats")
+      print("2. Equip weapon")
+      print("3. Use consumable")
       selection = input('What would you like to do? ').lower()
 
       if selection == '1' or selection == 'move':
         self.movement()
 
-      elif selection == '2' or selection == 'inventory':
-        self.checkInventory()
+      elif selection == '2' or selection == 'equip weapon':
+        self.SwapWeapon()
+
+      elif selection == '3' or selection == "use consumable":
+          self.inventory.useConsumable()
 
 #      elif selection == '3' or selection == 'stats':
 #        print('Your Health : ' + str(player.health))

@@ -4,17 +4,18 @@ import player
 class WorldSpace(object):
   worldBiomes = ['Giant Mushroom Forest', 'Tornado-Ravaged Desert', 'Misterious Forest','Bleak Tundra', 'Ancient Jungle']
 
-  enemies = [' ', 'orc', 'goblin', 'dragon', 'vampire']
+  enemies = [['orc', 5], [' ', 5], ['golbin', 5], ['dragon', 5], ['vampire', 5]]
 
-  consumables = [' ', 'health potion', 'vampirism anitidote', 'stamina potion', 'super strength potion', 'strength potion']
+  consumables = [[' ', 5], ['health potion', 5], ['vampirism antidote', 5], ['stamina potion', 5], ['super strength potion', 5], ['strength potion', 5]]
 
-  EnemySpawnFrequency = [20, 10, 5, 5]
 
   EnemyProbability = {}
   def __init__(self, scale):
       self.scale = scale
       self.Night = False
-      EnemyProbability = ProbabilityGen(enemies, EnemySpawnFrequency)
+      self.ProbobilitySum(self.enemies)
+      self.ProbobilitySum(self.consumables)
+
 
 
   def worldGen(self):
@@ -31,16 +32,16 @@ class WorldSpace(object):
 
   def terrainAssignment(self):
     for i in range(int(self.scale)):
-      for p in range(int(self.scale)):
-        self.world_array[i][p] = self.worldBiomes[int(int(self.world_array[i][p])/20)]
+        for p in range(int(self.scale)):
+            self.world_array[i][p] = self.worldBiomes[int(int(self.world_array[i][p])/20)]
 
   def enemyGeneration(self, player):
     for i in range(int(self.scale)):
       for p in range(int(self.scale)):
         if i == player.x and p == player.y:
-          self.enemy_array[i][p] = 0
+          self.enemy_array[i][p] = 0.0
         else:
-          self.enemy_array[i][p] = random.randrange(100)
+          self.enemy_array[i][p] = random.uniform(0.0, 100.0)
     self.enemyAssignment()
     # for i in range(10):
     #   for p in range(10):
@@ -48,17 +49,21 @@ class WorldSpace(object):
 
   def enemyAssignment(self):
     for i in range(int(self.scale)):
-      for p in range(int(self.scale)):
-        if int(self.enemy_array[i][p]) > 95:
-          self.enemy_array[i][p] = self.enemies[3]
-        elif int(self.enemy_array[i][p]) > 80:
-          self.enemy_array[i][p] = self.enemies[4]
-        elif int(self.enemy_array[i][p]) > 68:
-          self.enemy_array[i][p] = self.enemies[1]
-        elif int(self.enemy_array[i][p]) > 50:
-          self.enemy_array[i][p] = self.enemies[2]
-        else:
-          self.enemy_array[i][p] = self.enemies[0]
+        for p in range(int(self.scale)):
+            for j in range(len(self.enemies)):
+                if self.enemies[j][1] >= self.enemy_array[i][p]:
+                    self.enemy_array[i][p] = self.enemies[j][0]
+                    break
+        # if int(self.enemy_array[i][p]) > 95:
+        #   self.enemy_array[i][p] = self.enemies[3]
+        # elif int(self.enemy_array[i][p]) > 80:
+        #   self.enemy_array[i][p] = self.enemies[4]
+        # elif int(self.enemy_array[i][p]) > 68:
+        #   self.enemy_array[i][p] = self.enemies[1]
+        # elif int(self.enemy_array[i][p]) > 50:
+        #   self.enemy_array[i][p] = self.enemies[2]
+        # else:
+        #   self.enemy_array[i][p] = self.enemies[0]
 
   def consumablesGen(self):
     for i in range(int(self.scale)):
@@ -70,19 +75,23 @@ class WorldSpace(object):
     for i in range(int(self.scale)):
       for p in range(int(self.scale)):
         for j in range(2):
-          if int(self.drops_array[i][p][j])> 90:
-            self.drops_array[i][p][j] = self.consumables[2]
-          elif int(self.drops_array[i][p][j]) > 80:
-            self.drops_array[i][p][j] = self.consumables[4]
-          elif int(self.drops_array[i][p][j]) > 60:
-            self.drops_array[i][p][j] = self.consumables[1]
-          elif int(self.drops_array[i][p][j]) > 40:
-            self.drops_array[i][p][j] = self.consumables[3]
-          elif int(self.drops_array[i][p][j]) > 20:
-            self.drops_array[i][p][j] = self.consumables[5]
-
-          else:
-            self.drops_array[i][p][j] = self.consumables[0]
+            for k in range(len(self.consumables)):
+                if self.consumables[k][1] >= self.drops_array[i][p][j]:
+                    self.drops_array[i][p][j] = self.consumables[k][0]
+                    break
+          # if int(self.drops_array[i][p][j])> 90:
+          #   self.drops_array[i][p][j] = self.consumables[2]
+          # elif int(self.drops_array[i][p][j]) > 80:
+          #   self.drops_array[i][p][j] = self.consumables[4]
+          # elif int(self.drops_array[i][p][j]) > 60:
+          #   self.drops_array[i][p][j] = self.consumables[1]
+          # elif int(self.drops_array[i][p][j]) > 40:
+          #   self.drops_array[i][p][j] = self.consumables[3]
+          # elif int(self.drops_array[i][p][j]) > 20:
+          #   self.drops_array[i][p][j] = self.consumables[5]
+          #
+          # else:
+          #   self.drops_array[i][p][j] = self.consumables[0]
 
   def getTerrain(self, player):
     return self.world_array[player.x][player.y]
@@ -100,19 +109,16 @@ class WorldSpace(object):
        self.Night = True
        print('Night time is here be prepared!')
     elif self.TimeCounter <= 5:
-       print ("The sun is up, Day is here")
+       print ("The sun is up, Day has arrived")
     elif self.TimeCounter == 11:
        self.TimeCounter = 0
 
-  def ProbabilityGen(self, list, chance):
-      ProbabilityDictionary = { }
-      Empty = 0
-      for i in range(len(chance)):
-          Empty += chance[i]
-      Empty = 100 - Empty
-      chance.insert(0, Empty)
-      for i in range(len(chance)):
-          chance[i + 1] += chance[i]
-      for i in range(len(chance)):
-          ProbabilityDictionary[chance[i]] = list[i]
-      return ProbabilityDictionary
+  def ProbobilitySum(self, array):
+      Sum = 0.0
+      for i in range(len(array)):
+          Sum += array[i][1]
+      for i in range(len(array)):
+          if i == 0:
+              array[i][1] = 100.0 * array[i][1]/Sum
+          else:
+              array[i][1] = (100.0 * array[i][1]/Sum) + array[i-1][1]
