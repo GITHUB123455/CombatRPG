@@ -4,12 +4,12 @@ import player
 class WorldSpace(object):
   worldBiomes = ['Giant Mushroom Forest', 'Tornado-Ravaged Desert', 'Misterious Forest','Bleak Tundra', 'Ancient Jungle']
 
-  enemies = [['orc', 5], [' ', 5], ['golbin', 5], ['dragon', 5], ['vampire', 5]]
+  enemies = [[' ', 5], ['orc', 5], ['goblin', 5], ['dragon', 5], ['vampire', 5]]
 
   consumables = [[' ', 5], ['health potion', 5], ['vampirism antidote', 5], ['stamina potion', 5], ['super strength potion', 5], ['strength potion', 5]]
 
 
-  EnemyProbability = {}
+
   def __init__(self, scale):
       self.scale = scale
       self.Night = False
