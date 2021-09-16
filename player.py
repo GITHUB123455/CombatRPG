@@ -140,28 +140,25 @@ class Player(object):
       else:
         self.InfectedTime -= 1
 
-    def SwapWeapon(self):
-      if len(self.inventory.weapons) > 0:
-        self.inventory.displayWeapons()
-        self.inventory.equipWeapon()
-      else:
-        print('You have no weapons in your inventory.')
-        return
 
     def decision(self):
       print("1. Move")
       print("2. Equip weapon")
       print("3. Use consumable")
+      print("4. Equip armour")
       selection = input('What would you like to do? ').lower()
 
       if selection == '1' or selection == 'move':
         self.movement()
 
       elif selection == '2' or selection == 'equip weapon':
-        self.SwapWeapon()
+        self.inventory.equipWeapon()
 
       elif selection == '3' or selection == "use consumable":
           self.inventory.useConsumable()
+
+      elif selection == '4' or selection == "equip armour":
+          self.inventory.equipArmour()
 
 #      elif selection == '3' or selection == 'stats':
 #        print('Your Health : ' + str(player.health))

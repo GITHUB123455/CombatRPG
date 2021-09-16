@@ -15,10 +15,12 @@ consumables = {'health potion' : HealthPotion, 'strength potion' : StrengthPotio
 class Inventory(object):
   def __init__(self):
     self.equippedWeapon = Fists()
-    self.weapons = []
+    self.weapons = [[" ", 0] for i in range(len(weapons))]
     self.consumables = [[" ", 0] for i in range(len(consumables))]
     self.equippedArmour = RustyIronArmour()
     self.armour = [[" ", 0] for i in range(len(armours))]
+    for i, weapon in enumerate(weapons):
+      self.weapons[i][0] = weapon
     for i, consumable in enumerate(consumables):
       self.consumables[i][0] = consumable
     for i, armour in enumerate(armours):
@@ -29,11 +31,16 @@ class Inventory(object):
 
   def displayWeapons(self):
     print("weapons:")
-    for i in self.weapons:
-      print(i)
-
+    x = 0
+    for i in range(len(self.weapon)):
+      if self.weapon[i][1] != 0:
+        print(self.weapon[i][0] + "(x" + str(self.weapon[i][1]) + ")")
+        x += 1
+    if x == 0:
+      print("You have no armour in your inventory.")
+    return x
   def displayArmour(self):
-    print("consumables:")
+    print("Armour:")
     x = 0
     for i in range(len(self.armour)):
       if self.armour[i][1] != 0:
@@ -41,7 +48,7 @@ class Inventory(object):
         x += 1
     if x == 0:
       print("You have no armour in your inventory.")
-
+    return x
   def displayConsumables(self):
     print("consumables:")
     x = 0
@@ -51,54 +58,75 @@ class Inventory(object):
         x += 1
     if x == 0:
       print("You have no consumables in your inventory.")
+    return x
 
-  def equipWeapon(self):
-    selection = input("Select the weapon you would like to equip. ").lower()
-    try:
-      tmp = self.equippedWeapon.name
-      self.equippedWeapon = weapons[selection]()
-      self.weapons[self.weapons.index(selection)] = tmp
-      self.finalAttackBonus = self.equippedWeapon.attackBonus
-      print('You have equipped your ' + selection + '.')
-    except KeyError:
-      print('Exiting inventory.')
-      return
-    except ValueError:
-      print('Exiting inventory.')
-      return
-  def equipArmour(self):
-      self.displayArmour()
-      selection = input("Select the armour you would like to equip. ").lower()
-      tmp = self.equipArmour
-      try:
-          if self.armour[FindInList(selection, self.armour)][1] > 0:
-              self.armour[FindInList(selection, self.armour)][1] -= 1
-              print('You have equipped your ' + selection + '.')
-              self.equippedArmour = selection
-              self.armour[FindInList(tmp, self.armour)][1] += 1
-              return
-          else:
-              return
+    def equipWeapon(self):
+        x = self.displayWeapons()
+        if x > 0:
 
-      except KeyError:
-        print('Exiting inventory')
-        return
+            selection = input("Select the armour you would like to equip. ").lower()
+            tmp = self.equipWeapon
+            try:
+                if self.weapons[FindInList(selection, self.weapons)][1] > 0:
+                    self.weapons[FindInList(selection, self.weapons)][1] -= 1
+                    print('You have equipped your ' + selection + '.')
+                    self.equippedWeapon = selection
+                    self.weapons[FindInList(tmp, self.weapons)][1] += 1
+                    return
+                else:
+                    return
+
+
+
+            except KeyError:
+                print('Exiting inventory')
+                return
+        else:
+            print("Exiting inventory")
+            return
+
+    def equipArmour(self):
+        x = self.displayArmour()
+        if x > 0:
+
+            selection = input("Select the armour you would like to equip. ").lower()
+            tmp = self.equipArmour
+            try:
+                if self.armour[FindInList(selection, self.armour)][1] > 0:
+                    self.armour[FindInList(selection, self.armour)][1] -= 1
+                    print('You have equipped your ' + selection + '.')
+                    self.equippedArmour = selection
+                    self.armour[FindInList(tmp, self.armour)][1] += 1
+                    return
+                else:
+                  return
+        else:
+            print("Exiting inventory")
+            return
+
+                except KeyError:
+                    print('Exiting inventory')
+                    return
 
   def useConsumable(self):
-    self.displayConsumables()
-    selection = input("Select the consumable you would like to use. ").lower()
-    Flag = 0
-    try:
-        if self.consumables[FindInList(selection, self.consumables)][1] > 0:
-            for Slot in range(len(self.consumedItem)):
-                if self.consumedItem[Slot] is None and Flag == 0:
-                    self.consumedItem[Slot] = consumables[selection]()
-                    Flag = 1
-            self.consumables[FindInList(selection, self.consumables)][1] -= 1
-            print('You have consumed a ' + selection + '.')
-            return
-        else:
-            return
+    x = self.displayConsumables()
+    if x > 0:
+        selection = input("Select the consumable you would like to use. ").lower()
+        Flag = 0
+        try:
+            if self.consumables[FindInList(selection, self.consumables)][1] > 0:
+                for Slot in range(len(self.consumedItem)):
+                    if self.consumedItem[Slot] is None and Flag == 0:
+                        self.consumedItem[Slot] = consumables[selection]()
+                        Flag = 1
+                self.consumables[FindInList(selection, self.consumables)][1] -= 1
+                print('You have consumed a ' + selection + '.')
+                return
+            else:
+                return
+    else:
+        print("Exiting inventory")
+        return
 
     except KeyError:
       print('Exiting inventory')
