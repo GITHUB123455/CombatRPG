@@ -3,7 +3,7 @@ from inventory import Inventory
 
 class Player(object):
     def __init__(self, x, y, playerMaxDist):
-      #Location and movment
+      #Location and movement
       self.x = x
       self.y = y
       self.directions = dict(w=(0,-1), s=(0,1), d=(1,0), a=(-1,0))
@@ -28,18 +28,17 @@ class Player(object):
       self.paralyzeDuration = 0
       self.Infected = False
       self.InfectedTime = 0
-
+      self.persistentPoison = False
+      self.persistentPoisonDuration = 0
       self.inventory = Inventory()
 
       self.counter = 0
-
 
     def movement(self):
       self.counter += 1
       self.ApplyPotions()
 
-      if self.Infected:
-         self.infectedAction()
+      self.statusEffect(1)
 
       print('W. | North')
       print('S. | South')
@@ -56,8 +55,6 @@ class Player(object):
           #Return exception
           print('Invalid Input')
 
-    #Checks the player location against the world bounds and makes
-    #sure the player does not leave the map
     def worldBounds(self):
         if self.x >= self.playerMaxDist:
             self.x = self.playerMaxDist - 1
@@ -77,17 +74,15 @@ class Player(object):
       self.ApplyPotions()
       self.armourClass = 10 + self.dexterity
       self.armourClass = self.inventory.equippedArmour.ArClModifier + self.armourClass
-      if self.burning:
-        self.burningAction()
-
+      self.statusEffect(0)
       if self.paralyzed:
-        self.paralyzedAction()
-        return 0, 0
+          return 0,0
 
       print('1. Light Attack')
       print('2. Heavy Attack')
       print('3. Rest')
       print('4. Drink Potion')
+      print('5. Run away')
       attacktype = input('Input the attack you would like to make. ').lower()
       if attacktype == '1' or attacktype == 'light' or attacktype == 'light attack':
         if self.stamina >= 1:
@@ -121,25 +116,35 @@ class Player(object):
         print('Invalid input.')
         return self.attack()
 
-    def burningAction(self):
-      if self.burnDuration > 0:
-        self.health -= 5
-        self.burnDuration -= 1
-      else:
-        self.burning = False
+    def statusEffect(self, type):
+        # Combat Status Effect
+        if type == 0:
+            if self.burning:
+                if self.burnDuration > 0:
+                    self.health -= 5
+                    self.burnDuration -= 1
+                else:
+                    self.burning = False
 
-    def paralyzedAction(self):
-      if self.paralyzeDuration <= 0:
-        self.paralyzed = False
-      else:
-        self.paralyzeDuration -= 1
+            if self.paralyzed:
+                if self.paralyzeDuration <= 0:
+                    self.paralyzed = False
+                else:
+                    self.paralyzeDuration -= 1
 
-    def infectedAction(self):
-      if self.InfectedTime <= 0:
-        self.Infected = False
-      else:
-        self.InfectedTime -= 1
+        # Movement Status Effect
+        if type == 1:
+            if self.InfectedTime <= 0:
+                self.Infected = False
+            else:
+                self.InfectedTime -= 1
 
+        if self.persistentPoison:
+            if self.persistentPoisonDuration <= 0:
+                self.persistentPoison = False
+            else:
+                self.health -= 2
+                self.persistentPoisonDuration -= 1
 
     def decision(self):
       print("1. Move")
@@ -178,7 +183,9 @@ class Player(object):
       playerChoice = input('Would you like to pick it up? ').lower()
       if playerChoice == 'yes':
         if type == 0:
-          self.inventory.weapons.append(droppedItem)
+            for k in range(len(self.inventory.weapon)):
+                if self.inventory.weapon[k][0] == droppedItem:
+                    self.inventory.weapon[k][1] += 1
         elif type == 1:
           for k in range(len(self.inventory.consumables)):
               if self.inventory.consumables[k][0] == droppedItem:
