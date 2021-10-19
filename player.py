@@ -108,14 +108,16 @@ class Player(object):
         if self.stamina > self.maxStamina:
             self.stamina = self.maxStamina
             print('You are fully energized.')
-        return 0, 0
+        return 0,0
       if attacktype == '4':
         self.inventory.useConsumable()
         return 0,0
       else:
         print('Invalid input.')
         return self.attack()
-
+      if attacktype == '5':
+         print('You try to run away and...')
+         return -1,0
     def statusEffect(self, type):
         # Combat Status Effect
         if type == 0:

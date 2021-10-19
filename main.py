@@ -43,10 +43,12 @@ while True:
             player.decision()
         print('You see a(n) ' + enemy + '.')
         victory = combatLoop(enemy, player, world)
-        if victory == True:
+        if victory == 1:
             world.clearEnemy(player)
             player.pickupDrops(world, 0)
             player.decision()
-        if victory == False:
+        elif victory == 0:
             print('Game Over')
             break
+        elif victory == -1:
+            player.decision()
