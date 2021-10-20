@@ -1,3 +1,4 @@
+import engine
 from player import Player
 from world import WorldSpace
 from combat import combatLoop
@@ -14,6 +15,7 @@ world.consumablesGen()
 
 
 while True:
+    engine.clearScreen()
     if player.counter > 10:
         world.enemyGeneration(player)
         player.counter = 0
